@@ -1,22 +1,13 @@
 import os
-import requests 
 from dotenv import load_dotenv
-from bs4 import BeautifulSoup
+from services.web_scraper_service import WebScraper
 
 load_dotenv()
 
-BASE_URL = os.getenv('URL')
-URL = BASE_URL + '/' + os.getenv('TEST_NUMBER')
+scraper = WebScraper()
 
-r = requests.get(URL)
+test_id = os.getenv('TEST_NUMBER')
 
-soup = BeautifulSoup(r.content, 'html5lib')
+output = scraper.get_dashboard_information(test_id)
 
-table = soup.find('table', attrs={'class': 'table'})
-
-table_body = table.find('tbody')
-
-for row in table_body.find_all('tr'):
-    cols = row.find_all('td')
-    cols = [ele.text.strip() for ele in cols]
-    print(cols)
+print(output)
