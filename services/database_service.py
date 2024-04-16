@@ -22,7 +22,6 @@ class DatabaseService():
         bootcamps = self.repository.get_all(self.BOOTCAMP_TABLE, ["id", "name"])
 
         for bootcamp in bootcamps:
-            print(bootcamp)
             self.__bootcamps.append(Bootcamp(**bootcamp))
 
     def __set_tasks(self):
@@ -61,8 +60,6 @@ class DatabaseService():
         bootcamp_id = self.__get_bootcamp_id(bootcamp_name)
         task_id = self.__get_task_id(task_name)
 
-        print(bootcamp_id)
-        print(task_id)
 
         bootcamp_task = BootcampTask(bootcamp_id=bootcamp_id,
                                      task_id=task_id, 
@@ -77,14 +74,10 @@ class DatabaseService():
         bootcamp_id = self.__get_bootcamp_id(bootcamp_name)
         task_id = self.__get_task_id(task_name)
 
-        print(bootcamp_id)
-        print(task_id)
-        
         statement = f"SELECT id FROM {self.BOOTCAMP_TASK_TABLE} WHERE bootcamp_id = %s AND task_id = %s"
         data = (bootcamp_id, task_id)        
 
         result = self.repository.run_query(statement, data)        
-        print("\033[91m" + str(result) + "\033[0m")
         return result[0][0]
     
     def __get_bootcamp_id(self, name: str):

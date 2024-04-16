@@ -1,4 +1,8 @@
 import os
+import time
+import threading
+import json
+
 from datetime import datetime
 from dotenv import load_dotenv
 from services.web_scraper_service import WebScraper
@@ -6,8 +10,6 @@ from services.database_service import DatabaseService
 from services.filter_service import FilterService
 from models.submission_model import Submission
 from models.scraper_configuration_model import ScraperConfig
-
-import json
 
 load_dotenv()
 
@@ -20,7 +22,12 @@ def load_dashboard_data(ids: list):
 
     for id in ids:
         filter = FilterService()
-        data = scraper.get_dashboard_information(id)
+        try:
+            data = scraper.get_dashboard_information(id)
+        except Exception as e:
+            # Print error message in red 
+            print("\033[91m", f"Error loading {id}", "\033[0m")            
+            continue
 
         for value in data:
             task = value[0]
@@ -36,6 +43,10 @@ def load_dashboard_data(ids: list):
             }
             
             output.append(details)
+
+        # print f"Loaded {id}" in green 
+        print("\033[92m", f"Loaded {id}", "\033[0m")
+        
             
     return output
 
@@ -77,13 +88,26 @@ def get_scraping_details(file_name: str):
     bootcamps = [ScraperConfig(**detail) for detail in data]    
     return bootcamps
 
-
+def loading_animation():
+    emojis = ['⚫','🔵','🟢','🟡','🟠','🔴']
+    idx = 0
+    while not stopAnimation:
+        print(f'{emojis[idx % len(emojis)]}', end='\r')
+        idx += 1
+        time.sleep(0.5)    
     
 
 if __name__ == '__main__':    
+    global stopAnimation 
+
+    stopAnimation = False
+
     database_service = DatabaseService()        
 
     bootcamps = get_scraping_details("config.json")
+
+    animation_thread = threading.Thread(target=loading_animation)
+    animation_thread.start()
 
     for bootcamp in bootcamps:
         bootcamp_name = bootcamp.bootcamp
@@ -97,6 +121,9 @@ if __name__ == '__main__':
             handle_data_storage_operations(database_service, value, bootcamp_name)
 
         print("Done uploading")
+
+    stopAnimation = True
+    animation_thread.join()    
 
     print("Done")
 
