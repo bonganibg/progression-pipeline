@@ -5,6 +5,9 @@ from services.web_scraper_service import WebScraper
 from services.database_service import DatabaseService
 from services.filter_service import FilterService
 from models.submission_model import Submission
+from models.scraper_configuration_model import ScraperConfig
+
+import json
 
 load_dotenv()
 
@@ -63,25 +66,39 @@ def handle_data_storage_operations(datbase_service: DatabaseService, data: dict,
     
     database_service.create_submission(submission)
 
-def get_scraping_details(file_name: str):
+def get_scraping_details(file_name: str):    
+    if not os.path.exists(file_name):
+        print("File does not exist")
+        exit()
+
+    with open(file_name) as file:
+        data = json.load(file)
+
+    bootcamps = [ScraperConfig(**detail) for detail in data]    
+    return bootcamps
 
 
     
 
 if __name__ == '__main__':    
-    database_service = DatabaseService()    
+    database_service = DatabaseService()        
 
-    bootcamp_name = "Test booty"
-    numbers = ["VP24020013340", "BC24020013412"]    
+    bootcamps = get_scraping_details("config.json")
 
-    print("Started Scraping")
-    data = load_dashboard_data(numbers)
-    print("Done Scraping")    
-    
-    for value in data:
-        handle_data_storage_operations(database_service, value, bootcamp_name)
+    for bootcamp in bootcamps:
+        bootcamp_name = bootcamp.bootcamp
+        numbers = bootcamp.students
 
-    print("Done uploading")
+        print("Started Scraping")
+        data = load_dashboard_data(numbers)
+        print("Done Scraping")    
+        
+        for value in data:
+            handle_data_storage_operations(database_service, value, bootcamp_name)
+
+        print("Done uploading")
+
+    print("Done")
 
     
 
