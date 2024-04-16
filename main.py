@@ -95,6 +95,10 @@ def loading_animation():
         print(f'{emojis[idx % len(emojis)]}', end='\r')
         idx += 1
         time.sleep(0.5)    
+
+def write_to_temp(dashboard_data: list):
+    with open(f"temp_data.json", "w") as file:
+        json.dump(dashboard_data, file)
     
 
 if __name__ == '__main__':    
@@ -102,12 +106,14 @@ if __name__ == '__main__':
 
     stopAnimation = False
 
-    database_service = DatabaseService()        
+    # database_service = DatabaseService()        
 
     bootcamps = get_scraping_details("config.json")
 
     animation_thread = threading.Thread(target=loading_animation)
     animation_thread.start()
+
+    output = []
 
     for bootcamp in bootcamps:
         bootcamp_name = bootcamp.bootcamp
@@ -115,12 +121,21 @@ if __name__ == '__main__':
 
         print("Started Scraping")
         data = load_dashboard_data(numbers)
-        print("Done Scraping")    
+        print("Done Scraping")
+
+        temp_value = {
+            "bootcamp": bootcamp_name,
+            "review_data": data
+        }
+
+        output.append(temp_value)    
         
-        for value in data:
-            handle_data_storage_operations(database_service, value, bootcamp_name)
+        # for value in data:
+        #     handle_data_storage_operations(database_service, value, bootcamp_name)
 
         print("Done uploading")
+    
+    write_to_temp(output)
 
     stopAnimation = True
     animation_thread.join()    
