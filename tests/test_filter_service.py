@@ -31,6 +31,17 @@ class TestFilterService(unittest.TestCase):
 
             self.assertEqual(task_name, expcted)
 
+    def test_get_score(self):
+        score_inputs_and_expected = [
+            ('100', 100),
+            ('N/A', None)
+        ]
+
+        for input, expected in score_inputs_and_expected:
+            score = self.service.get_score(input)
+
+            self.assertEqual(score, expected)
+
 
         
 
