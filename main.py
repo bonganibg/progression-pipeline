@@ -141,6 +141,3 @@ if __name__ == '__main__':
     animation_thread.join()    
 
     print("Done")
-
-    
-

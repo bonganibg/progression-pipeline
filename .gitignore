@@ -10,6 +10,7 @@ output.json
 # C extensions
 *.so
 
+
 # Remove test html file 
 index.html
 
