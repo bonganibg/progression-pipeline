@@ -1,8 +1,8 @@
-from repository.postgres_repository import PostgresRepository
-from models.bootcamp_model import Bootcamp
-from models.bootcamp_task_model import BootcampTask
-from models.submission_model import Submission
-from models.task_model import Task
+from src.repository.postgres_repository import PostgresRepository
+from src.models.bootcamp_model import Bootcamp
+from src.models.bootcamp_task_model import BootcampTask
+from src.models.submission_model import Submission
+from src.models.task_model import Task
 
 class DatabaseService():
     BOOTCAMP_TABLE = 'bootcamp'

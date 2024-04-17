@@ -5,11 +5,11 @@ import json
 
 from datetime import datetime
 from dotenv import load_dotenv
-from services.web_scraper_service import WebScraper
-from services.database_service import DatabaseService
-from services.filter_service import FilterService
-from models.submission_model import Submission
-from models.scraper_configuration_model import ScraperConfig
+from src.services.web_scraper_service import WebScraper
+from src.services.database_service import DatabaseService
+from src.services.filter_service import FilterService
+from src.models.submission_model import Submission
+from src.models.scraper_configuration_model import ScraperConfig
 
 load_dotenv()
 
